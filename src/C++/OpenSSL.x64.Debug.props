@@ -3,8 +3,8 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <IncludePath>..\..\..\..\openssl_github\dbg64\include;$(IncludePath)</IncludePath>
-    <LibraryPath>..\..\..\..\openssl_github\dbg64\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>..\..\..\openssl_github\dbg64\include;$(IncludePath)</IncludePath>
+    <LibraryPath>..\..\..\openssl_github\dbg64\lib;$(LibraryPath)</LibraryPath>
     <_PropertySheetDisplayName>OpenSSL.x64.Debug</_PropertySheetDisplayName>
   </PropertyGroup>
   <ItemDefinitionGroup>
