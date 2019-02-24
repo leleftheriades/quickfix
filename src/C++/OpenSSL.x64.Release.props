@@ -3,8 +3,8 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <IncludePath>..\..\..\..\openssl_github\rel64\include;$(IncludePath)</IncludePath>
-    <LibraryPath>..\..\..\..\openssl_github\rel64\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>..\..\..\openssl_github\rel64\include;$(IncludePath)</IncludePath>
+    <LibraryPath>..\..\..\openssl_github\rel64\lib;$(LibraryPath)</LibraryPath>
     <_PropertySheetDisplayName>OpenSSL.x64.Release</_PropertySheetDisplayName>
   </PropertyGroup>
   <ItemDefinitionGroup>
