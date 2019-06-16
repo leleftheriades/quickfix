@@ -425,10 +425,10 @@
     <ClInclude Include="C++\test\TestHelper.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\UnitTest++\UnitTest++_vs17.vcxproj">
+    <ProjectReference Include="..\UnitTest++\UnitTest++_vs19.vcxproj">
       <Project>{64a4fefe-0461-4e95-8cc1-91ef5f57dbc6}</Project>
     </ProjectReference>
-    <ProjectReference Include="C++\quickfix_vs17.vcxproj">
+    <ProjectReference Include="C++\quickfix_vs19.vcxproj">
       <Project>{d5d558ea-bbac-4862-a946-d3881bace3b7}</Project>
     </ProjectReference>
   </ItemGroup>

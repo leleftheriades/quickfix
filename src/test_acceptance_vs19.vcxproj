@@ -381,7 +381,7 @@
     <ClInclude Include="getopt-repl.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="C++\quickfix_vs17.vcxproj">
+    <ProjectReference Include="C++\quickfix_vs19.vcxproj">
       <Project>{d5d558ea-bbac-4862-a946-d3881bace3b7}</Project>
     </ProjectReference>
   </ItemGroup>

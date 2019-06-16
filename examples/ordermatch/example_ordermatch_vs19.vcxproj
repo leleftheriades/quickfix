@@ -385,9 +385,8 @@
     <ClInclude Include="OrderMatcher.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\C++\quickfix_vs17.vcxproj">
+    <ProjectReference Include="..\..\src\C++\quickfix_vs19.vcxproj">
       <Project>{d5d558ea-bbac-4862-a946-d3881bace3b7}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

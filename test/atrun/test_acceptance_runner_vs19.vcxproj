@@ -384,7 +384,7 @@
     <ClInclude Include="TestSuite.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\UnitTest++\UnitTest++_vs17.vcxproj">
+    <ProjectReference Include="..\..\UnitTest++\UnitTest++_vs19.vcxproj">
       <Project>{64a4fefe-0461-4e95-8cc1-91ef5f57dbc6}</Project>
     </ProjectReference>
   </ItemGroup>

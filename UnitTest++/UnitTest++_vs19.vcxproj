@@ -38,7 +38,7 @@
     <ProjectGuid>{64A4FEFE-0461-4E95-8CC1-91EF5F57DBC6}</ProjectGuid>
     <RootNamespace>UnitTest</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <ProjectName>UnitTest++_vs17</ProjectName>
+    <ProjectName>UnitTest++_vs19</ProjectName>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
