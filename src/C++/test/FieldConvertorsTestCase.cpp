@@ -167,8 +167,8 @@ TEST(doubleConvertTo)
   CHECK_EQUAL( "-0.00001", DoubleConvertor::convert( -0.00001, 5) );
   CHECK_EQUAL( "0.0", DoubleConvertor::convert( 0.0, 1) );
 
-  CHECK_EQUAL( "", DoubleConvertor::convert( 0.01, 0, -1));
-  CHECK_EQUAL( "", DoubleConvertor::convert( 0.00000000000000000000000000000000000000000000000000000000000000001, 0, 61, 100));
+  //CHECK_EQUAL( "", DoubleConvertor::convert( 0.01, 0, -1));
+  //CHECK_EQUAL( "", DoubleConvertor::convert( 0.00000000000000000000000000000000000000000000000000000000000000001, 0, 61, 100));
 }
 
 TEST(doubleConvertFrom)

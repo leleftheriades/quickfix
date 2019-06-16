@@ -249,8 +249,10 @@ public:
   static const int SIGNIFICANT_DIGITS = 15;
   static const int BUFFFER_SIZE = 32;
 
-  static std::string convert( double value, int padding = 0, int significant_digits = SIGNIFICANT_DIGITS, int buffer_size = BUFFFER_SIZE )
+  static std::string convert( double value, int padding = 0)
   {
+	const int significant_digits = SIGNIFICANT_DIGITS;
+	const int buffer_size = BUFFFER_SIZE;
     char result[buffer_size];
     char *end = 0;
 
