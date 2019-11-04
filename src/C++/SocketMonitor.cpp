@@ -221,6 +221,9 @@ void SocketMonitor::block( Strategy& strategy, bool poll, double timeout )
   else
   {
     strategy.onError( *this );
+    if (!poll) {
+        Sleep(static_cast<int>(timeout * 1000.0));
+    }
   }
 }
 

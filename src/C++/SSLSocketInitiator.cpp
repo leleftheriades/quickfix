@@ -283,7 +283,7 @@ void SSLSocketInitiator::onStop()
 void SSLSocketInitiator::doConnect( const SessionID& s, const Dictionary& d )
 {
   try
-  {
+  {    
     std::string address;
     short port = 0;
     std::string sourceAddress;
@@ -298,6 +298,8 @@ void SSLSocketInitiator::doConnect( const SessionID& s, const Dictionary& d )
 
     log->onEvent( "Connecting to " + address + " on port " + IntConvertor::convert((unsigned short)port) + " (Source " + sourceAddress + ":" + IntConvertor::convert((unsigned short)sourcePort) + ")");
     socket_handle result = m_connector.connect( address, port, m_noDelay, m_sendBufSize, m_rcvBufSize, sourceAddress, sourcePort );
+
+    log->onEvent("Socket created with handle:" + std::to_string(result));
 
     SSL *ssl = SSL_new(m_ctx);
     if (ssl == 0)
@@ -318,7 +320,10 @@ void SSLSocketInitiator::doConnect( const SessionID& s, const Dictionary& d )
     setPending( s );
     m_pendingConnections[ result ] = new SSLSocketConnection( *this, s, result, ssl, &m_connector.getMonitor() );
   }
-  catch ( std::exception& ) {}
+  catch ( std::exception& ex)
+  {
+      getLog()->onEvent(ex.what());
+  }
 }
 
 bool SSLSocketInitiator::handshakeSSL(SSL* ssl)
@@ -331,7 +336,25 @@ bool SSLSocketInitiator::handshakeSSL(SSL* ssl)
         if ((err == SSL_ERROR_WANT_READ) ||
             (err == SSL_ERROR_WANT_WRITE)) {
             errno = EINTR;
-        } else {
+        }
+        else if (err == SSL_ERROR_SYSCALL)
+        {
+            getLog()->onEvent("SSL_connect failed with SSL error " + IntConvertor::convert(err) + ". Error stack:");
+
+            char errorBuffer[512];
+            unsigned long systemError;
+
+            while ((systemError = ERR_get_error()) != 0) {
+                ERR_error_string_n(systemError, errorBuffer, sizeof(errorBuffer));
+                getLog()->onEvent(errorBuffer);
+            }
+            getLog()->onEvent("End of error stack");
+
+            getLog()->onEvent(socket_get_last_error());
+
+            return false;
+        }
+        else {            
             getLog()->onEvent("SSL_connect failed with SSL error " + IntConvertor::convert(err));
             return false;
         }
@@ -343,6 +366,8 @@ bool SSLSocketInitiator::handshakeSSL(SSL* ssl)
 
 void SSLSocketInitiator::onConnect( SocketConnector& connector, socket_handle s )
 {
+  getLog()->onEvent("Socket connected handle: " + std::to_string(s));
+
   SocketConnections::iterator i = m_pendingConnections.find( s );
   if( i == m_pendingConnections.end() ) return;
   SSLSocketConnection* pSocketConnection = i->second;
@@ -358,7 +383,11 @@ void SSLSocketInitiator::onConnect( SocketConnector& connector, socket_handle s 
   {
       setDisconnected(pSocketConnection->getSession()->getSessionID());
       m_pendingConnections.erase(i);
+      //Responder* responder = (Responder * )pSocketConnection; //TODO: This ensures that the socket monitor drops the invalid socket handle
+      //responder->disconnect();
       delete pSocketConnection;
+      
+      getLog()->onEvent("Socket deleted due to ssl handshake error");
   }
 }
 
@@ -381,6 +410,7 @@ bool SSLSocketInitiator::onData( SocketConnector& connector, socket_handle s )
 
 void SSLSocketInitiator::onDisconnect( SocketConnector&, socket_handle s )
 {
+    getLog()->onEvent("Socket disconnect " + std::to_string(s));
   SocketConnections::iterator i = m_connections.find( s );
   SocketConnections::iterator j = m_pendingConnections.find( s );
 
@@ -408,6 +438,7 @@ void SSLSocketInitiator::onDisconnect( SocketConnector&, socket_handle s )
 
 void SSLSocketInitiator::onError( SocketConnector& connector )
 {
+  getLog()->onEvent("Socket error " + socket_get_last_error());
   onTimeout( connector );
 }
 
