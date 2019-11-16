@@ -382,11 +382,17 @@ void SSLSocketInitiator::onConnect( SocketConnector& connector, socket_handle s 
   }else
   {
       setDisconnected(pSocketConnection->getSession()->getSessionID());
-      m_pendingConnections.erase(i);
-      //Responder* responder = (Responder * )pSocketConnection; //TODO: This ensures that the socket monitor drops the invalid socket handle
-      //responder->disconnect();
+
+      Session* pSession = pSocketConnection->getSession();
+      if (pSession)
+      {
+          pSession->disconnect();
+          setDisconnected(pSession->getSessionID());
+      }
+
       delete pSocketConnection;
-      
+      m_pendingConnections.erase(i);
+
       getLog()->onEvent("Socket deleted due to ssl handshake error");
   }
 }
