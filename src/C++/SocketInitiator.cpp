@@ -151,7 +151,10 @@ void SocketInitiator::doConnect( const SessionID& s, const Dictionary& d )
     m_pendingConnections[ result ] 
       = new SocketConnection( *this, s, result, &m_connector.getMonitor() );
   }
-  catch ( std::exception& ) {}
+  catch ( std::exception& ex)
+  {
+      getLog()->onEvent(ex.what());
+  }
 }
 
 void SocketInitiator::onConnect( SocketConnector&, socket_handle s )
