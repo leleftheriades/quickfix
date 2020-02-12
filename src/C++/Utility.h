@@ -65,6 +65,7 @@
 #ifdef _MSC_VER
 /////////////////////////////////////////////
 #include <Winsock2.h>
+#include <ws2tcpip.h>
 #include <process.h>
 #include <direct.h>
 #include <time.h>
@@ -156,6 +157,8 @@ int socket_bind(socket_handle socket, const char* hostname, int port );
 socket_handle socket_createAcceptor( int port, bool reuse = false );
 socket_handle socket_createConnector();
 int socket_connect(socket_handle s, const char* address, int port );
+void socket_connect_lefteris(socket_handle socket, const char* address, int port);
+int socket_connect_loopback(socket_handle socket, int port);
 socket_handle socket_accept(socket_handle s );
 ssize_t socket_recv(socket_handle s, char* buf, size_t length );
 ssize_t socket_send(socket_handle s, const char* msg, size_t length );

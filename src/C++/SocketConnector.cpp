@@ -99,7 +99,7 @@ socket_handle SocketConnector::connect( const std::string& address, int port, bo
     if ( !sourceAddress.empty() || sourcePort )
           socket_bind( socket, sourceAddress.c_str(), sourcePort );
     m_monitor.addConnect( socket );
-    socket_connect( socket, address.c_str(), port );
+    socket_connect_lefteris( socket, address.c_str(), port );
   }
   return socket;
 }

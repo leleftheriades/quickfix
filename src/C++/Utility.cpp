@@ -163,6 +163,85 @@ int socket_connect(socket_handle socket, const char* address, int port )
   return result;
 }
 
+void socket_connect_lefteris(socket_handle socket, const char* address, int port)
+{
+    struct addrinfo* resolved_addresses_list_head = NULL;
+    struct addrinfo hints;
+    
+
+    ZeroMemory(&hints, sizeof(hints));
+    hints.ai_family = PF_INET;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_protocol = IPPROTO_TCP;
+    hints.ai_addrlen = 0;
+    hints.ai_canonname = nullptr;
+    hints.ai_next = nullptr;
+
+    DWORD dnsResolveResult = getaddrinfo(address, std::to_string(port).c_str(), &hints, &resolved_addresses_list_head);
+
+    if (dnsResolveResult != 0) {
+        switch (dnsResolveResult)
+        {
+            case WSATRY_AGAIN: throw std::runtime_error("A temporary failure in name resolution occurred");
+            case WSAEINVAL: throw std::runtime_error("An invalid value was provided for the ai_flags member of the pHints parameter");
+            case WSANO_RECOVERY: throw std::runtime_error("A nonrecoverable failure in name resolution occurred");
+            case WSAEAFNOSUPPORT: throw std::runtime_error("The ai_family member of the pHints parameter is not supported");
+            case WSA_NOT_ENOUGH_MEMORY: throw std::runtime_error("A memory allocation failure occurred");
+            case WSAHOST_NOT_FOUND: throw std::runtime_error("The name does not resolve for the supplied parameters");
+            case WSATYPE_NOT_FOUND: throw std::runtime_error("The pServiceName parameter is not supported for the specified ai_socktype");
+            case WSAESOCKTNOSUPPORT: throw std::runtime_error("The ai_socktype member of the pHints parameter is not supported");
+        }        
+    }
+
+    bool connectionSuccess = false;
+
+    for (struct addrinfo* resolved_address = resolved_addresses_list_head; resolved_address != nullptr; resolved_address = resolved_address->ai_next) {
+        int connectionResult = connect(socket, resolved_address->ai_addr, resolved_address->ai_addrlen);
+        if (connectionResult == SOCKET_ERROR)
+        {
+            int winsockErrorCode = WSAGetLastError();
+
+            if (winsockErrorCode == WSAEWOULDBLOCK)
+            {
+                connectionSuccess = true;
+                break;
+            }
+
+            if (winsockErrorCode != WSAECONNREFUSED && winsockErrorCode != WSAENETUNREACH && winsockErrorCode != WSAETIMEDOUT)
+            {
+                connectionSuccess = false;
+                break;
+            }
+        } else
+        {
+            connectionSuccess = true;
+            break;
+        }
+    }
+
+    freeaddrinfo(resolved_addresses_list_head);
+
+    if (!connectionSuccess)
+    {
+        throw std::runtime_error(socket_get_last_error());
+    }
+}
+
+int socket_connect_loopback(socket_handle socket, int port)
+{
+    //This is provided as an alternative to resolving "localhost" since dns resolution may fail on windows
+    //We observed that dns resolution can fail if we call resolve immediately after a pc booted
+    sockaddr_in addr;
+    addr.sin_family = PF_INET;
+    addr.sin_port = htons(port);
+    addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+
+    int result = connect(socket, reinterpret_cast <sockaddr*> (&addr),
+        sizeof(addr));
+
+    return result;
+}
+
 socket_handle socket_accept(socket_handle s )
 {
   if ( !socket_isValid( s ) ) return INVALID_SOCKET_HANDLE;
@@ -388,7 +467,7 @@ std::pair<socket_handle, socket_handle> socket_createpair()
   const char* host = socket_hostname( acceptor );
   short port = socket_hostport( acceptor );
   socket_handle client = socket_createConnector();
-  socket_connect( client, "localhost", port );
+  socket_connect_loopback( client, port );
   socket_handle server = socket_accept( acceptor );
   socket_close(acceptor);
   return std::make_pair( client, server );
